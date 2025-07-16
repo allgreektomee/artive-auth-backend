@@ -1,0 +1,11 @@
+# 환경 설정 파일 무시
+.env
+application.yml
+application.properties
+*.jar
+# IDE 설정
+.idea/
+*.iml
+
+# 빌드 결과물
+/build/.idea/

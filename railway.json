@@ -11,7 +11,7 @@
           "dependsOn": ["install"]
         },
         "start": {
-          "cmd": "java -jar build/libs/*.jar"
+          "cmd": "java -jar build/libs/artive-auth-backend.jar"
         }
       },
       "providers": ["java"]

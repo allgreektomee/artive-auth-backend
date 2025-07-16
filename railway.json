@@ -1,0 +1,20 @@
+{
+  "build": {
+    "builder": "nixpacks",
+    "nixpacksConfig": {
+      "phases": {
+        "install": {
+          "dependsOn": ["setup"],
+          "cmds": ["./gradlew build"]
+        },
+        "build": {
+          "dependsOn": ["install"]
+        },
+        "start": {
+          "cmd": "java -jar build/libs/*.jar"
+        }
+      },
+      "providers": ["java"]
+    }
+  }
+}

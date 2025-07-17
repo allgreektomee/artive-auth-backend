@@ -36,3 +36,4 @@
 - 이메일 인증을 위해 `Google App Password` 필요
 - 썸네일 저장 경로: `user-thumbnail/` (S3 버킷 내 디렉토리)
 
+# 배포 확인용

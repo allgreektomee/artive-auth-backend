@@ -2,19 +2,21 @@ server:
   port: 8080
 
 spring:
+  url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}?serverTimezone=UTC&characterEncoding=UTF-8
+  driver-class-name: com.mysql.cj.jdbc.Driver
+  username: ${MYSQL_USERNAME}
+  password: ${MYSQL_PASSWORD}
+
   jpa:
     hibernate:
-      ddl-auto: create-drop
-
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+      ddl-auto: update # 또는 create / create-drop 등 개발용에 맞게
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
 
   h2:
     console:
-      enabled: true
+      enabled: false
 
   mail:
     host: smtp.gmail.com

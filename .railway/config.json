@@ -3,8 +3,10 @@
     "builder": "nixpacks",
     "nixpacksConfig": {
       "phases": {
+        "setup": {
+          "nixPkgs": ["openjdk17", "gradle"]
+        },
         "install": {
-          "dependsOn": ["setup"],
           "cmds": ["./gradlew build"]
         },
         "build": {

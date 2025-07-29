@@ -1,5 +1,11 @@
 server:
   port: 8080
+  forward-headers-strategy: native
+
+  tomcat:
+      redirect-context-root: true
+      remote-ip-header: x-forwarded-for
+      protocol-header: x-forwarded-proto
 
 spring:
   url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}?serverTimezone=UTC&characterEncoding=UTF-8

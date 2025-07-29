@@ -15,7 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "https://artive-frontend-eqqh4jh6a-artives-projects.vercel.app",  // ✅ 서브도메인 추가
                         "https://artive-frontend-git-main-artives-projects.vercel.app"   // ✅ 추가 배포 주소도 함께
                 )
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedMethods("*")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }

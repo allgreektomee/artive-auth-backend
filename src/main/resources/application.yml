@@ -7,11 +7,11 @@ server:
     protocol-header: x-forwarded-proto
 
 spring:
-  datasource:  # 이 부분이 빠져있었음!
-    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}?serverTimezone=UTC&characterEncoding=UTF-8
+  datasource:
+    url: jdbc:mysql://${MYSQLHOST}:${MYSQLPORT}/${MYSQLDATABASE}?serverTimezone=UTC&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${MYSQL_USERNAME}
-    password: ${MYSQL_PASSWORD}
+    username: ${MYSQLUSER}
+    password: ${MYSQLPASSWORD}
     # Railway 최적화 설정
     hikari:
       maximum-pool-size: 3

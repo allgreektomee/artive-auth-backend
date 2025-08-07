@@ -16,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -23,31 +24,40 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        String authHeader = request.getHeader("Authorization");
+        try {
+            String authHeader = request.getHeader("Authorization");
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                String token = authHeader.substring(7);
 
-            if (jwtProvider.validateToken(token)) {
-                String email = jwtProvider.getEmailFromToken(token);
-                User user = userRepository.findByEmail(email).orElseThrow();
-                UserDetailsImpl userDetails = new UserDetailsImpl(user); // ✅ UserDetails로 wrapping
+                if (jwtProvider.validateToken(token)) {
+                    String email = jwtProvider.getEmailFromToken(token);
 
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                    Optional<User> userOptional = userRepository.findByEmail(email);
+                    if (userOptional.isPresent()) {
+                        User user = userOptional.get();
+                        UserDetailsImpl userDetails = new UserDetailsImpl(user);
 
-                logger.info("AuthHeader = "+ authHeader );
-                logger.info("Token = "+ token);
-                logger.info("Email from token ="+ email);
+                        UsernamePasswordAuthenticationToken authentication =
+                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                        logger.info("AuthHeader = " + authHeader);
+                        logger.info("Token = " + token);
+                        logger.info("Email from token = " + email);
+                    }
+                }
             }
+        } catch (Exception e) {
+            // 예외 발생시 그냥 넘어감
         }
 
         filterChain.doFilter(request, response);

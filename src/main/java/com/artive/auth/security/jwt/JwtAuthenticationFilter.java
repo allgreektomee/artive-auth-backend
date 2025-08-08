@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Optional;
 
 @Component
@@ -30,6 +29,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
+
+        // 1. OPTIONS 요청은 JWT 검증 없이 바로 통과
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         try {
             String authHeader = request.getHeader("Authorization");
@@ -46,18 +51,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         UserDetailsImpl userDetails = new UserDetailsImpl(user);
 
                         UsernamePasswordAuthenticationToken authentication =
-                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                                new UsernamePasswordAuthenticationToken(
+                                        userDetails,
+                                        null,
+                                        userDetails.getAuthorities()
+                                );
                         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                        logger.info("AuthHeader = " + authHeader);
-                        logger.info("Token = " + token);
-                        logger.info("Email from token = " + email);
+                        // 민감정보 마스킹 후 로그
+                        logger.info(String.format("JWT 인증 성공 - email: %s, token: %s...",
+                                email,
+                                token.substring(0, Math.min(token.length(), 10))
+                        ));
                     }
                 }
             }
         } catch (Exception e) {
-            // 예외 발생시 그냥 넘어감
+            logger.error("JWT 필터 처리 중 오류 발생", e);
         }
 
         filterChain.doFilter(request, response);

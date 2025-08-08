@@ -1,0 +1,8 @@
+[variables]
+JAVA_OPTS = "-Xmx800m -Xms400m -XX:+UseG1GC -XX:+UseStringDeduplication -XX:MaxGCPauseMillis=200"
+
+[phases.build]
+cmds = ["./gradlew clean build -x test"]
+
+[start]
+cmd = "java $JAVA_OPTS -jar build/libs/app.jar"
